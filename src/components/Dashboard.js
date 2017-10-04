@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-//import Helpdesk from './dashboard/Helpdesk';
-//import Tech from './dashboard/Tech';
+import Helpdesk from './dashboard/Helpdesk';
+import Tech from './dashboard/Tech';
 import { Row, Grid, Col, Jumbotron } from 'react-bootstrap';
 
 class Dashboard extends Component {
@@ -18,10 +18,10 @@ class Dashboard extends Component {
                         </Col>
                         <Col md={9}>
                             {this.props.type === 'helpdesk' ? (
-                                    <h1>Helpdesk</h1>
+                                    <Helpdesk />
                                 )
                                 : this.props.type === 'tech' ? (
-                                    <h1>Tech</h1>
+                                    <Tech user={this.props.user} />
                                 )
                                 :null}
                         </Col>

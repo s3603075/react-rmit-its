@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import firebase from 'firebase';
-import { Navbar, Button, Nav, NavItem, Jumbotron } from 'react-bootstrap';
-import { Route, Redirect } from 'react-router';
-import Dashboard from './Dashboard.js';
-import logo from './logo.svg';
 import './App.css';
+import { Navbar, Button, Nav, NavItem, Jumbotron } from 'react-bootstrap';
+import firebase from 'firebase';
+import { Route, Redirect } from 'react-router';
+import Dashboard from './components/Dashboard';
+import logo from './logo.svg';
 
 class App extends Component {
     state = {
@@ -66,7 +66,7 @@ class App extends Component {
         });
     }
 
-  render() {
+    render() {
     return (
       <div className="App">
           <Navbar inverse>
@@ -118,7 +118,7 @@ class App extends Component {
           </div>
       </div>
     );
-  }
+    }
 }
 
 export default App;

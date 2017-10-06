@@ -10,7 +10,8 @@ class Helpdesk extends Component {
         comments: [],
         techUsers: [],
         selectedTech: null,
-        priority: null
+        priority: null,
+        esclevel: null
     }
 
     /* Once component has mounted, fetch from API + firebase */
@@ -24,26 +25,7 @@ class Helpdesk extends Component {
                 this.setState({
                     tickets: responseJson
                 });
-                // const pendingTickets = [];
-                // for(const ele in responseJson) {
-                //     firebase.database().ref('ticket/'+responseJson[ele].id).on('value', (snapshot) => {
-                //         if(snapshot.val() === null) {
-                //             pendingTickets.push(responseJson[ele]);
-
-                //             /* Force the view to re-render (async problem) */
-                //             this.forceUpdate();
-                //         }
-                //     })
-                // }
-                // return pendingTickets;
             })
-            // .then((tickets) => {
-            //     console.log(tickets);
-            //     this.setState({
-            //         tickets: tickets
-            //     });
-            // })
-
         /* Creates a firebase listener which will automatically
             update the list of tech users every time a new tech
             registers into the system
@@ -94,44 +76,69 @@ class Helpdesk extends Component {
 
     /* Click assign button */
     assignTicketToTech = () => {
+        console.log(this.state.selectedTech);
         if(this.state.selectedTech === null) {
             return;
         }
-
-        /* Add assigned ticket+tech into database*/
-        const data = {};
-        data['ticket/' + this.state.selectedTicket.id] = {
+        var ticketsRef =  firebase.database().ref('ticket/' + this.state.selectedTicket.id);
+        if(ticketsRef === null) {
+            return;
+        }
+        ticketsRef.on('value', (snapshot) => {
+            if(snapshot.val().priority === undefined)   {
+                ticketsRef.update({
+                    priority: "Low"
+                });
+            }
+            if(snapshot.val().esclevel === undefined)   {
+                ticketsRef.update({
+                    esclevel: "1"
+                });
+            } 
+        })
+        ticketsRef.update({
             ticket_id: this.state.selectedTicket.id,
-            user_id: this.state.selectedTech, // stored Tech ID
-            priority: null,
-            esc_lvl: null,
-        };
-        firebase.database().ref().update(data)
+            user_id: this.state.selectedTech
+        });
+
+        
         alert('Tech successfully assigned to ticket!');
-        window.location.reload();
     }
 
     handlePriorityChange = (e) => {
-        console.log(e.target.value);
-        var usersRef = ref.child("users");
-        
-        firebase.database().ref().update(data)
-        alert('Priority changed');
-        window.location.reload();
+        this.setState({
+            priority: e.target.value
+        });      
     }
 
-    assignPriority = (priority) => {
+    assignPriority = () => {
         if(this.state.priority === null) {
             return;
         }
+        var ticketsRef =  firebase.database().ref('ticket/' + this.state.selectedTicket.id);
+        ticketsRef.update({
+            priority: this.state.priority,
+        });   
 
-        const data = {};
-        data['ticket/' + this.state.selectedTicket.id] = {
-            priority: priority
-        };
-        firebase.database().ref().update(data)
-        alert('Priority changed');
-        window.location.reload();
+        alert('Priority changed!'); 
+    }
+
+    handleEscLvlChange = (e) => {
+        this.setState({
+            esclevel: e.target.value
+        });      
+    }
+
+    assignEscLvl = () => {
+        if(this.state.esclevel === null) {
+            return;
+        }
+        var ticketsRef =  firebase.database().ref('ticket/' + this.state.selectedTicket.id);
+        ticketsRef.update({
+            esclevel: this.state.esclevel,
+        });   
+
+        alert('Escalation changed!'); 
     }
 
     /* Render the page! */
@@ -188,13 +195,28 @@ class Helpdesk extends Component {
                                     <h3 className="text-uppercase">Change priority</h3>
                                     <select className="form-control" onChange={this.handlePriorityChange} defaultValue="-1">
                                     <option value="-1" defaultValue disabled>Select priority</option>
-                                        <option value="1">Low</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
                                     </select>
 
                                     <div className="clearfix"><br/>
-                                        <Button className="pull-right" bsStyle="success" onClick={this.assignTicketToTech}>Assign</Button>
+                                        <Button className="pull-right" bsStyle="success" onClick={this.assignPriority}>Assign</Button>
                                     </div>
                                     <hr/>
+
+                                    <h3 className="text-uppercase">Change Escalation Level </h3>
+                                    <select className="form-control" onChange={this.handleEscLvlChange} defaultValue="-1">
+                                    <option value="-1" defaultValue disabled>Select priority</option>
+                                        <option value={1}>1</option>
+                                        <option value={2}>2</option>
+                                        <option value={3}>3</option>
+                                    </select>
+
+                                    <div className="clearfix"><br/>
+                                        <Button className="pull-right" bsStyle="success" onClick={this.assignEscLvl}>Assign</Button>
+                                    </div>
+
                                     <h3 className="text-uppercase">Assign to tech</h3>
                                     <select className="form-control" onChange={this.handleTechChange} defaultValue="-1">
                                     <option value="-1" defaultValue disabled>Select a tech user</option>

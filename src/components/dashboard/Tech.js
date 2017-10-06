@@ -5,7 +5,8 @@ import { Table } from 'react-bootstrap';
 
 class Tech extends Component {
     state = {
-        tickets: []
+        tickets: [],
+        priority: []
     }
 
     componentDidMount() {
@@ -19,8 +20,9 @@ class Tech extends Component {
                 for(const ele in responseJson) {
                     firebase.database().ref('ticket/'+responseJson[ele].id).on('value', (snapshot) => {
                         if(snapshot.val() !== null && snapshot.val().user_id === this.props.user.uid) {
+                            responseJson[ele].priority = snapshot.val().priority;
+                            responseJson[ele].esclevel = snapshot.val().esclevel;
                             myTickets.push(responseJson[ele]);
-
                             /* Force the view to re-render (async problem) */
                             this.forceUpdate();
                         }
@@ -43,14 +45,14 @@ class Tech extends Component {
                 {tickets.length < 1 ? (
                     <div className="alert alert-info">You have not been assigned any tickets.</div>
                 )
-                : tickets.map((ticket, i) => (
-                    
+                : (
                     <Table striped hover>
                             <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Actions</th>
+                                <th>Priority</th>
+                                <th>Escalation Level</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -58,14 +60,13 @@ class Tech extends Component {
                                 <tr key={i}>
                                     <td>{ticket.id}</td>
                                     <td>{ticket.email}</td>
-                                    <td>
-                                        
-                                    </td>
+                                    <td>{ticket.priority}</td>
+                                    <td>{ticket.esclevel}</td>
                                 </tr>
                             ))}
                             </tbody>
                     </Table>
-                ))}
+                )}
             </div>
         );
     }

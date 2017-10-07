@@ -7,7 +7,6 @@ class Helpdesk extends Component {
     state = {
         tickets: [],
         selectedTicket: null,
-        comments: [],
         techUsers: [],
         selectedTech: null,
         priority: null,
@@ -50,14 +49,14 @@ class Helpdesk extends Component {
         this.setState({
             selectedTicket: (selectedTicket !== null && selectedTicket.id === ticket.id ? null : ticket)
         });
-        fetch(apiurl + '/api/tickets/comments/' + ticket.id)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({
-                    comments: responseJson,
-                });
-                console.log(this.state.comments);
-            })
+        // fetch(apiurl + '/api/tickets/comments/' + ticket.id)
+        //     .then((response) => response.json())
+        //     .then((responseJson) => {
+        //         this.setState({
+        //             comments: responseJson,
+        //         });
+        //         console.log(this.state.comments);
+        //     })
     }
 
     /* Close button for dialog */
@@ -184,11 +183,7 @@ class Helpdesk extends Component {
                             <Button block bsStyle="danger" onClick={this.closeDialogClick}>Close Dialog</Button>
                             <h3 className="text-uppercase">Ticket Details</h3>
                             <p><b>Issue: </b>{selectedTicket.issue}</p>
-                            <p><b>Title: </b><br/>{selectedTicket.title}</p>
-                            {comments.map((comment, i) => (
-                                <p><b>Comment: </b><br/>{comment.body}</p>
-                            ))}
-                            
+                            <p><b>Title: </b><br/>{selectedTicket.title}</p>                            
                             {techUsers.length > 0 && (
                                 <div>
                                      <hr/>

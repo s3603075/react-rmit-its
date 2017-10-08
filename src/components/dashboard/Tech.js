@@ -8,6 +8,8 @@ class Tech extends Component {
     constructor(props)  {
         super(props)
         this.resetSelection = this.resetSelection.bind(this)
+        this.setTickets = this.setTickets.bind(this)
+        this.updateSelectedTicket = this.updateSelectedTicket.bind(this)
     }
     state = {
         tickets: [],
@@ -19,6 +21,10 @@ class Tech extends Component {
         /* Fetch all tickets and check which tickets have
             been assigned to this tech user
          */
+        this.setTickets();
+    }
+    
+    setTickets()    {
         fetch(apiurl + '/api/tickets')
             .then((response) => response.json())
             .then((responseJson) => {
@@ -40,7 +46,23 @@ class Tech extends Component {
                 this.setState({
                     tickets: tickets
                 });
+                if(this.state.selectedTicket !== null)  {
+                    this.updateSelectedTicket();
+                }
             })
+            
+
+    }
+
+    updateSelectedTicket()  {
+        for(const ele in this.state.tickets)    {
+            if(this.state.tickets[ele].id === this.state.selectedTicket.id )   {
+                this.setState({
+                    selectedTicket: this.state.tickets[ele]
+                })
+                return;
+            }
+        }
     }
 
     ticketDetailsClick = (ticket) => {     
@@ -80,6 +102,7 @@ class Tech extends Component {
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Priority</th>
+                                <th>Status</th>
                                 <th>Escalation Level</th>
                                 <th>Summary</th>
                             </tr>
@@ -90,6 +113,7 @@ class Tech extends Component {
                                     <td>{ticket.id}</td>
                                     <td>{ticket.email}</td>
                                     <td>{ticket.priority}</td>
+                                    <td>{ticket.status}</td>
                                     <td>{ticket.esclevel}</td>
                                     <td>
                                         <Button bsStyle="info" onClick={() => this.ticketDetailsClick(ticket)}>More Details</Button>
@@ -105,6 +129,8 @@ class Tech extends Component {
                         ticket={this.state.selectedTicket} 
                         comments={this.state.comments} 
                         resetSelection= {this.resetSelection}
+                        setTickets= {this.setTickets.bind(this)}
+                        updateSelectedTicket= {this.updateSelectedTicket}
                         />
                     )}
                 </div>

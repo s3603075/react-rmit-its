@@ -5,9 +5,25 @@ import { Table, Modal, Button } from 'react-bootstrap';
 import { Route, Redirect } from 'react-router';
 
 class Details extends Component {
+    constructor(props){
+        super(props);
+    }
+    
     state = {
         showModal: true,
-        status: null
+        status: null,
+        setStatus: null,
+        setEsclevel: null,
+        esclevel: null,
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const newStatus = nextProps.ticket.status;
+        const newEsc = nextProps.ticket.esclevel;
+        this.setState({
+            setStatus: newStatus,
+            setEsclevel: newEsc,
+        })
     }
 
     closeModal = (bool) => {
@@ -27,12 +43,32 @@ class Details extends Component {
         fetch(apiurl+"api/tickets/status/"+this.props.ticket.id+"?status="+this.state.status, {
             method: 'PUT'
         })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson);
-            })
-        alert('Status changed!'); 
+         .then((response) => {
+            if(response.ok) {
+                this.props.setTickets();
+            }
+        })
+
     }
+
+    handleEscLvlChange = (e) => {
+        this.setState({
+            esclevel: e.target.value
+        });      
+    }
+
+     assignEscLvl = () => {
+        if(this.state.esclevel === null) {
+            return;
+        }
+        var ticketsRef =  firebase.database().ref('ticket/' + this.props.ticket.id);
+        ticketsRef.update({
+            esclevel: this.state.esclevel,
+        });   
+        this.props.setTickets();
+        
+    }
+
 
     render () {
         return (
@@ -42,21 +78,33 @@ class Details extends Component {
                             <Modal.Title>Ticket #{this.props.ticket.id}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
+                            <h2>Issue</h2>
+                            <div>
+                                {this.state.setStatus}
+                            </div>
                             <h2>Status</h2>
-                                {this.props.ticket.status}
                                 <select className="form-control" onChange={this.handleStatusChange} defaultValue="-1">
                                     <option value="-1" defaultValue disabled>Select priority</option>
-                                        <option value={1}>Unresolved</option>
-                                        <option value={2}>Resolved</option>
+                                        <option value={1}>Resolved</option>
+                                        <option value={2}>Unresolved</option>
                                         <option value={3}>In Progress</option>
                                 </select>
                                 <div className="clearfix"><br/>
                                         <Button className="pull-right" bsStyle="success" onClick={this.changeStatus}>Assign</Button>
                                 </div>
-                            <h2>Issue</h2>
+                            <h2>Change Escalation Level</h2>
                             <div>
-                                {this.props.ticket.issue}
+                                {this.state.setEsclevel}
                             </div>
+                                <select className="form-control" onChange={this.handleEscLvlChange} defaultValue="-1">
+                                    <option value="-1" defaultValue disabled>Select level</option>
+                                        <option value={1}>1</option>
+                                        <option value={2}>2</option>
+                                        <option value={3}>3</option>
+                                </select>
+                                <div className="clearfix"><br/>
+                                        <Button className="pull-right" bsStyle="success" onClick={this.assignEscLvl}>Assign</Button>
+                                </div>
                             <h2>Comments</h2>
                              {this.props.comments.map((comment, i) => (
                                 <div key={i}>
@@ -67,7 +115,6 @@ class Details extends Component {
 
                         <Modal.Footer>
                             <Button onClick={this.props.resetSelection}>Close</Button>
-                            <Button bsStyle="primary">Save changes</Button>
                         </Modal.Footer>
                 </Modal>
             </div>

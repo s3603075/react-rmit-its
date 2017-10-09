@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { apiurl } from "../../helpers/constants";
 import firebase from 'firebase';
-import { Table, Modal, Button } from 'react-bootstrap';
-import { Route, Redirect } from 'react-router';
+import { Modal, Button } from 'react-bootstrap';
 
 class Details extends Component {
     constructor(props){

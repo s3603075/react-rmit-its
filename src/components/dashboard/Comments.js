@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { apiurl } from "../../helpers/constants";
-import firebase from 'firebase';
 import { Modal, Button } from 'react-bootstrap';
-import { EditorState, convertToRaw, convertFromRaw, ContentState } from 'draft-js';
+import { EditorState, convertToRaw} from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import './react-draft-wysiwyg.css';
 
@@ -64,8 +63,8 @@ class Comments extends Component {
         const { editorState } = this.state;
         return (
            <div className="static-modal">
-                <Modal show={this.state.showModal}>
-                    <Modal.Header>
+                <Modal show={this.state.showModal} onHide={this.props.resetSelection}>
+                    <Modal.Header closeButton>
                             <Modal.Title>Ticket #{this.props.ticket.id}</Modal.Title>
                         </Modal.Header>
                         
@@ -75,8 +74,9 @@ class Comments extends Component {
                             )}
                             {this.state.comments.map((comment, i) => (
                                 <div key={i}>
-                                  <h4>{i + 1}</h4>
+                                  <h4>ITS Support at {comment.created_at}</h4>
                                   {comment.body}
+                                  <hr/>
                                 </div>
                             ))}
                             <Editor
@@ -98,7 +98,5 @@ class Comments extends Component {
         );
     }
 }
-/**/
-
 
 export default Comments;

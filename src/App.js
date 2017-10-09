@@ -72,7 +72,7 @@ class App extends Component {
           <Navbar inverse>
               <Navbar.Header>
                   <Navbar.Brand>
-                      <a href="#">Ticket System</a>
+                      <a href="/">Ticket System</a>
                   </Navbar.Brand>
               </Navbar.Header>
               <Nav pullRight>
@@ -110,11 +110,6 @@ class App extends Component {
                       <Redirect to="/" />
                   )
               )} />
-              <footer className="text-center">
-                  <p>
-                      Example demo written by Nicholas Zuccarelli
-                  </p>
-              </footer>
           </div>
       </div>
     );

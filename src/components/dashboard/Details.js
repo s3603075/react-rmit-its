@@ -71,16 +71,24 @@ class Details extends Component {
     render () {
         return (
             <div className="static-modal">
-                <Modal show={this.state.showModal}>
-                    <Modal.Header>
+                <Modal show={this.state.showModal} onHide={this.props.resetSelection}>
+                    <Modal.Header closeButton>
                             <Modal.Title>Ticket #{this.props.ticket.id}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <h2>Issue</h2>
-                            <div>
-                                {this.state.setStatus}
-                            </div>
-                            <h2>Status</h2>
+                            <h4>Issue</h4>
+                                <div>
+                                    {this.props.ticket.issue}
+                                </div>
+                            <h4>Operating System</h4>
+                                <div>
+                                    {this.props.ticket.os}
+                                    <hr/>
+                                </div>
+                            <h4>Status</h4>
+                                <div style={{ marginBottom: 10 }}>
+                                    {this.state.setStatus}
+                                </div>
                                 <select className="form-control" onChange={this.handleStatusChange} defaultValue="-1">
                                     <option value="-1" defaultValue disabled>Select priority</option>
                                         <option value={1}>Resolved</option>
@@ -90,8 +98,8 @@ class Details extends Component {
                                 <div className="clearfix"><br/>
                                         <Button className="pull-right" bsStyle="success" onClick={this.changeStatus}>Assign</Button>
                                 </div>
-                            <h2>Change Escalation Level</h2>
-                            <div>
+                            <h4>Change Escalation Level</h4>
+                            <div style={{ marginBottom: 10 }}>
                                 {this.state.setEsclevel}
                             </div>
                                 <select className="form-control" onChange={this.handleEscLvlChange} defaultValue="-1">

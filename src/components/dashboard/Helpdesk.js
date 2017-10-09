@@ -49,14 +49,6 @@ class Helpdesk extends Component {
         this.setState({
             selectedTicket: (selectedTicket !== null && selectedTicket.id === ticket.id ? null : ticket)
         });
-        // fetch(apiurl + '/api/tickets/comments/' + ticket.id)
-        //     .then((response) => response.json())
-        //     .then((responseJson) => {
-        //         this.setState({
-        //             comments: responseJson,
-        //         });
-        //         console.log(this.state.comments);
-        //     })
     }
 
     /* Close button for dialog */
@@ -140,13 +132,9 @@ class Helpdesk extends Component {
         alert('Escalation changed!'); 
     }
 
-    /* Render the page! */
-    /* TODO : Complete in your own time:
-        Do you think you could split this page into separate sub-components?
-     */
     render () {
         const vm = this
-        const { selectedTicket, tickets, techUsers, comments } = this.state
+        const { selectedTicket, tickets, techUsers} = this.state
 
         return (
             <div>
@@ -181,9 +169,8 @@ class Helpdesk extends Component {
                     <Col md={5}>
                         <Jumbotron style={{padding: 10}}>
                             <Button block bsStyle="danger" onClick={this.closeDialogClick}>Close Dialog</Button>
-                            <h3 className="text-uppercase">Ticket Details</h3>
-                            <p><b>Issue: </b>{selectedTicket.issue}</p>
-                            <p><b>Title: </b><br/>{selectedTicket.title}</p>                            
+                            <h3>Ticket Details</h3>
+                            <p><b>Issue: </b>{selectedTicket.issue}</p>                         
                             {techUsers.length > 0 && (
                                 <div>
                                      <hr/>
@@ -211,6 +198,7 @@ class Helpdesk extends Component {
                                     <div className="clearfix"><br/>
                                         <Button className="pull-right" bsStyle="success" onClick={this.assignEscLvl}>Assign</Button>
                                     </div>
+                                    <hr/>
 
                                     <h3 className="text-uppercase">Assign to tech</h3>
                                     <select className="form-control" onChange={this.handleTechChange} defaultValue="-1">
@@ -223,6 +211,7 @@ class Helpdesk extends Component {
                                     <div className="clearfix"><br/>
                                         <Button className="pull-right" bsStyle="success" onClick={this.assignTicketToTech}>Assign</Button>
                                     </div>
+                                    <hr/>
                                 </div>
                                 )
                             }

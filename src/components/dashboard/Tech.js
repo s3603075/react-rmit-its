@@ -102,6 +102,7 @@ class Tech extends Component {
                                 <th>Status</th>
                                 <th>Escalation Level</th>
                                 <th>Summary</th>
+                                <th>Comments</th>
                             </tr>
                             </thead>
                             <tbody>

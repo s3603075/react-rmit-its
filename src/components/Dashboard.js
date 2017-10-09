@@ -11,8 +11,8 @@ class Dashboard extends Component {
                     <Row className="show-grid">
                         <Col md={3}>
                             <Jumbotron style={{padding: 10}} className="text-center">
-                                <img src={this.props.user.photoURL} className="img-responsive img-circle" style={{padding:20}} />
-                                <h4 className="text-uppercase">Hello</h4>
+                                <img src={this.props.user.photoURL} alt="profile" className="img-responsive" style={{padding:20}} />
+                                <h4>Hello</h4>
                                 <h3>{this.props.user.displayName}</h3>
                             </Jumbotron>
                         </Col>

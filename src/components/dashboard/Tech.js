@@ -3,18 +3,20 @@ import { apiurl } from "../../helpers/constants";
 import firebase from 'firebase';
 import { Table, Button } from 'react-bootstrap';
 import Details from './Details';
+import Comments from './Comments';
 
 class Tech extends Component {
     constructor(props)  {
         super(props)
         this.resetSelection = this.resetSelection.bind(this)
         this.setTickets = this.setTickets.bind(this)
-        this.updateSelectedTicket = this.updateSelectedTicket.bind(this)
+        this.editComments = this.editComments.bind(this)
     }
     state = {
         tickets: [],
         selectedTicket: null,
         comments: [],
+        editComments: false,
     }
 
     componentDidMount() {
@@ -79,12 +81,14 @@ class Tech extends Component {
             })
     }
 
-    resetSelection(e)   {
-        e.preventDefault()
+    resetSelection()   {
         this.setState({
             selectedTicket: null
         })
-        console.log(this.state.selectedTicket.id);
+    }
+
+    editComments(bool)  {
+        this.setState({editComments: bool});
     }
 
     render () {
@@ -118,19 +122,31 @@ class Tech extends Component {
                                     <td>
                                         <Button bsStyle="info" onClick={() => this.ticketDetailsClick(ticket)}>More Details</Button>
                                     </td>
+                                    <td>
+                                        <Button bsStyle="info" onClick={() => {this.ticketDetailsClick(ticket); this.editComments(true)}}>Comments</Button>
+                                    </td>
                                 </tr>
                             ))}
                             </tbody>
                     </Table>
                 )}
                 <div>
-                    {this.state.selectedTicket !== null && (
+                    {this.state.selectedTicket !== null && this.state.editComments === false &&(
                         <Details 
                         ticket={this.state.selectedTicket} 
                         comments={this.state.comments} 
                         resetSelection= {this.resetSelection}
                         setTickets= {this.setTickets.bind(this)}
-                        updateSelectedTicket= {this.updateSelectedTicket}
+                        />
+                    )}
+                </div>
+                <div>
+                    {this.state.selectedTicket !== null && this.state.editComments === true && (
+                        <Comments 
+                        ticket={this.state.selectedTicket} 
+                        resetSelection= {this.resetSelection}
+                        setTickets= {this.setTickets.bind(this)}
+                        editComments = {this.editComments}
                         />
                     )}
                 </div>

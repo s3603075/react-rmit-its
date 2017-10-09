@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { apiurl } from "../../helpers/constants";
+import firebase from 'firebase';
 import { Modal, Button } from 'react-bootstrap';
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import './react-draft-wysiwyg.css';
-//import draftToHtml from 'draftjs-to-html';
-//import htmlToDraft from 'html-to-draftjs';
 
 
 class Comments extends Component {
@@ -13,8 +12,40 @@ class Comments extends Component {
         super(props);
         this.state = {
           editorState: EditorState.createEmpty(),
-          showModal: true
+          showModal: true,
+          comments:[]
         }
+    }
+
+    componentDidMount() {
+        this.getComments();
+    }
+
+    editorChanges = () => {
+        const rawContent = JSON.stringify( convertToRaw(this.state.editorState.getCurrentContent() ));
+        fetch(apiurl + '/api/tickets/comments/' + this.props.ticket.id, {
+            headers:  {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: rawContent
+          })
+          .then((response) => {
+              if(response.ok) {
+                this.getComments()
+              }
+        }) 
+    }
+
+    getComments() {
+      fetch(apiurl + '/api/tickets/comments/' + this.props.ticket.id)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                this.setState({
+                    comments: responseJson,
+                });
+            })
     }
 
     
@@ -32,13 +63,37 @@ class Comments extends Component {
     render () {
         const { editorState } = this.state;
         return (
-            <div>
-                <Editor
-                  editorState={editorState}
-                  wrapperClassName="demo-wrapper"
-                  editorClassName="demo-editor"
-                  onEditorStateChange={(editorState) => {this.onEditorStateChange(editorState)}}
-                />
+           <div className="static-modal">
+                <Modal show={this.state.showModal}>
+                    <Modal.Header>
+                            <Modal.Title>Ticket #{this.props.ticket.id}</Modal.Title>
+                        </Modal.Header>
+                        
+                        <Modal.Body>
+                            {this.state.comments.length < 1 && (
+                             <div className="alert alert-info">No comments yet.</div>
+                            )}
+                            {this.state.comments.map((comment, i) => (
+                                <div key={i}>
+                                  <h4>{i + 1}</h4>
+                                  {comment.body}
+                                </div>
+                            ))}
+                            <Editor
+                              editorState={editorState}
+                              wrapperClassName="demo-wrapper"
+                              editorClassName="demo-editor"
+                              onEditorStateChange={(editorState) => {this.onEditorStateChange(editorState)}}
+                            />
+                            <div className="clearfix"><br/>
+                              <Button className="pull-right" bsStyle="success" onClick={()=> this.editorChanges()}>Save</Button>
+                            </div>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button onClick={() => {this.props.resetSelection(); this.props.editComments(false)}}>Close</Button>
+                        </Modal.Footer>
+                </Modal>
             </div>
         );
     }

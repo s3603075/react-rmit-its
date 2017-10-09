@@ -15,7 +15,6 @@ class Tech extends Component {
     state = {
         tickets: [],
         selectedTicket: null,
-        comments: [],
         editComments: false,
     }
 
@@ -72,13 +71,7 @@ class Tech extends Component {
         this.setState({
             selectedTicket: (selectedTicket !== null && selectedTicket.id === ticket.id ? null : ticket)
         });
-        fetch(apiurl + '/api/tickets/comments/' + ticket.id)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({
-                    comments: responseJson,
-                });
-            })
+        return;
     }
 
     resetSelection()   {
@@ -134,7 +127,6 @@ class Tech extends Component {
                     {this.state.selectedTicket !== null && this.state.editComments === false &&(
                         <Details 
                         ticket={this.state.selectedTicket} 
-                        comments={this.state.comments} 
                         resetSelection= {this.resetSelection}
                         setTickets= {this.setTickets.bind(this)}
                         />

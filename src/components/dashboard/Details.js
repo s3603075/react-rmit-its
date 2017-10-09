@@ -6,16 +6,15 @@ import { Modal, Button } from 'react-bootstrap';
 class Details extends Component {
     constructor(props){
         super(props);
+        this.state = {
+            showModal: true,
+            status: null,
+            setStatus: this.props.ticket.status,
+            setEsclevel: this.props.ticket.esclevel,
+            esclevel: null,
+        }
     }
     
-    state = {
-        showModal: true,
-        status: null,
-        setStatus: null,
-        setEsclevel: null,
-        esclevel: null,
-    }
-
     componentWillReceiveProps(nextProps) {
         const newStatus = nextProps.ticket.status;
         const newEsc = nextProps.ticket.esclevel;
@@ -104,12 +103,6 @@ class Details extends Component {
                                 <div className="clearfix"><br/>
                                         <Button className="pull-right" bsStyle="success" onClick={this.assignEscLvl}>Assign</Button>
                                 </div>
-                            <h2>Comments</h2>
-                             {this.props.comments.map((comment, i) => (
-                                <div key={i}>
-                                    {comment.body}
-                                </div>   
-                            ))}
                         </Modal.Body>
 
                         <Modal.Footer>

@@ -4,7 +4,13 @@ import { Navbar, Button, Nav, NavItem, Jumbotron } from 'react-bootstrap';
 import firebase from 'firebase';
 import { Route, Redirect } from 'react-router';
 import Dashboard from './components/Dashboard';
-import logo from './logo.svg';
+
+/***********************
+ * Title: Ticket System source code
+ * Author: Nicholas Zuccarelli
+ * Date: 10/10/17
+ * Availability: https://rmit.edu.au
+ ***********************/
 
 class App extends Component {
     state = {
@@ -12,6 +18,7 @@ class App extends Component {
         user: null
     }
 
+    //Handles login when saved
     componentWillMount () {
         firebase.auth().onAuthStateChanged(this.handleCredentials);
     }
@@ -22,6 +29,7 @@ class App extends Component {
         }
     }
 
+    //Standard auth from firebase
     handleClick = (type) => {
         const provider = new firebase.auth.GoogleAuthProvider();
         firebase.auth().signInWithPopup(provider)
@@ -29,6 +37,7 @@ class App extends Component {
             .then(() => { this.handleLogin(type) });
     }
 
+    //Get type of user and store in local storage
     handleCredentials = (params) => {
         console.log(params);
         this.setState({
@@ -37,6 +46,7 @@ class App extends Component {
         });
     }
 
+    //Login with type and save to firebase
     handleLogin = (type) => {
         localStorage.setItem('type', type);
         this.setState({
@@ -54,6 +64,7 @@ class App extends Component {
         firebase.database().ref().update(user)
     }
 
+    //Set state when logging out
     handleSignout = () => {
         const vm = this;
         vm.setState({
@@ -86,7 +97,7 @@ class App extends Component {
               <Route exact path="/" render={() => (
                   this.state.user === null ? (
                       <Jumbotron className="text-center">
-                          <img src={logo} className="App-logo" alt="logo" style={{width:200}} />
+                          
                           <h1>Sign in to continue</h1>
                           <p>
                               Please select your account type:

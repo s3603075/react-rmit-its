@@ -15,9 +15,7 @@ class Helpdesk extends Component {
 
     /* Once component has mounted, fetch from API + firebase */
     componentDidMount() {
-        /* Fetch all tickets and check which tickets have
-            an assigned tech
-         */
+        //Fetch all tickets
         fetch(apiurl + '/api/tickets')
             .then((response) => response.json())
             .then((responseJson) => {
@@ -65,9 +63,9 @@ class Helpdesk extends Component {
         });
     }
 
-    /* Click assign button */
+    /* Click assign button. Assigns ticket to tech and provides priority/esclevel
+    if they do not exist already */
     assignTicketToTech = () => {
-        console.log(this.state.selectedTech);
         if(this.state.selectedTech === null) {
             return;
         }
@@ -75,6 +73,7 @@ class Helpdesk extends Component {
         if(ticketsRef === null) {
             return;
         }
+        //Provide default values if they don't exist already
         ticketsRef.on('value', (snapshot) => {
             if(snapshot.val().priority === undefined)   {
                 ticketsRef.update({
@@ -87,6 +86,7 @@ class Helpdesk extends Component {
                 });
             } 
         })
+        //Assign the ticket to the tech
         ticketsRef.update({
             ticket_id: this.state.selectedTicket.id,
             user_id: this.state.selectedTech
@@ -96,12 +96,14 @@ class Helpdesk extends Component {
         alert('Tech successfully assigned to ticket!');
     }
 
+    //Handles changing priority in form
     handlePriorityChange = (e) => {
         this.setState({
             priority: e.target.value
         });      
     }
 
+    //Assigns a priority within firebase
     assignPriority = () => {
         if(this.state.priority === null) {
             return;
@@ -114,12 +116,14 @@ class Helpdesk extends Component {
         alert('Priority changed!'); 
     }
 
+    //Handles escalation level
     handleEscLvlChange = (e) => {
         this.setState({
             esclevel: e.target.value
         });      
     }
 
+    //Assigns escalation level to firebase
     assignEscLvl = () => {
         if(this.state.esclevel === null) {
             return;

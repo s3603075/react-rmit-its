@@ -3,7 +3,7 @@ import { apiurl } from "../../helpers/constants";
 import { Modal, Button } from 'react-bootstrap';
 import { EditorState, convertToRaw} from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import './react-draft-wysiwyg.css';
+import '../../react-draft-wysiwyg.css'
 
 
 class Comments extends Component {
@@ -16,12 +16,17 @@ class Comments extends Component {
         }
     }
 
+    //Mount ticket comments first
     componentDidMount() {
         this.getComments();
     }
 
+    /*Gets the JSON from the editor and creates a POST request to store comment to ticket in 
+    database.*/    
     editorChanges = () => {
+        //Get current state of editor
         const rawContent = JSON.stringify( convertToRaw(this.state.editorState.getCurrentContent() ));
+        //Send to API
         fetch(apiurl + '/api/tickets/comments/' + this.props.ticket.id, {
             headers:  {
               'Accept': 'application/json',
@@ -31,12 +36,14 @@ class Comments extends Component {
             body: rawContent
           })
           .then((response) => {
+              //Refresh state when response is successful
               if(response.ok) {
                 this.getComments()
               }
         }) 
     }
 
+    //Gets the comments from the ticket id from API
     getComments() {
       fetch(apiurl + '/api/tickets/comments/' + this.props.ticket.id)
             .then((response) => response.json())
@@ -47,13 +54,14 @@ class Comments extends Component {
             })
     }
 
-    
+    //Draft.js state changer for editor
     onEditorStateChange(editorState) {
         this.setState({
           editorState,
         });
     };
 
+    //Close modal when finished
     closeModal = (bool) => {
         this.setState({showModal: bool});
     }
@@ -63,7 +71,7 @@ class Comments extends Component {
         const { editorState } = this.state;
         return (
            <div className="static-modal">
-                <Modal show={this.state.showModal} onHide={this.props.resetSelection}>
+                <Modal show={this.state.showModal} onHide={() => {this.props.resetSelection(); this.props.editComments(false)}}>
                     <Modal.Header closeButton>
                             <Modal.Title>Ticket #{this.props.ticket.id}</Modal.Title>
                         </Modal.Header>

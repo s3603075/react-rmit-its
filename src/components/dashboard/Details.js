@@ -15,6 +15,7 @@ class Details extends Component {
         }
     }
     
+    //Change props state when parent(tech.js) state changes
     componentWillReceiveProps(nextProps) {
         const newStatus = nextProps.ticket.status;
         const newEsc = nextProps.ticket.esclevel;
@@ -24,16 +25,19 @@ class Details extends Component {
         })
     }
 
+    //Helper to close modal
     closeModal = (bool) => {
         this.setState({showModal: bool});
     }
 
+    //Handle status change
     handleStatusChange = (e) => {
         this.setState({
             status: e.target.value
         });      
     }
 
+    //Create a PUT request to change the status of a ticket
     changeStatus = () =>  {
         if(this.state.status === null) {
             return;
@@ -42,6 +46,8 @@ class Details extends Component {
             method: 'PUT'
         })
          .then((response) => {
+            //If the response is successful, refresh the parent(tech.js) state of tickets, and change
+            //selectedTicket state as well.  
             if(response.ok) {
                 this.props.setTickets();
             }
@@ -49,20 +55,23 @@ class Details extends Component {
 
     }
 
+    //Handles escalation level
     handleEscLvlChange = (e) => {
         this.setState({
             esclevel: e.target.value
         });      
     }
 
-     assignEscLvl = () => {
+    //Assign the escalation level from within firebase
+    assignEscLvl = () => {
         if(this.state.esclevel === null) {
             return;
         }
         var ticketsRef =  firebase.database().ref('ticket/' + this.props.ticket.id);
         ticketsRef.update({
             esclevel: this.state.esclevel,
-        });   
+        });
+        //Refresh tickets state in parent   
         this.props.setTickets();
         
     }

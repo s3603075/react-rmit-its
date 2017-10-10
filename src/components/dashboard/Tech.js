@@ -8,24 +8,25 @@ import Comments from './Comments';
 class Tech extends Component {
     constructor(props)  {
         super(props)
+        this.state = {
+            tickets: [],
+            selectedTicket: null,
+            editComments: false,
+        }
+        //Callback methods for tech state
         this.resetSelection = this.resetSelection.bind(this)
         this.setTickets = this.setTickets.bind(this)
         this.editComments = this.editComments.bind(this)
     }
-    state = {
-        tickets: [],
-        selectedTicket: null,
-        editComments: false,
-    }
-
+   
     componentDidMount() {
-        /* Fetch all tickets and check which tickets have
-            been assigned to this tech user
-         */
         this.setTickets();
     }
     
     setTickets()    {
+        /* Fetch all tickets and check which tickets have
+            been assigned to this tech user
+         */
         fetch(apiurl + '/api/tickets')
             .then((response) => response.json())
             .then((responseJson) => {
@@ -33,6 +34,7 @@ class Tech extends Component {
                 for(const ele in responseJson) {
                     firebase.database().ref('ticket/'+responseJson[ele].id).on('value', (snapshot) => {
                         if(snapshot.val() !== null && snapshot.val().user_id === this.props.user.uid) {
+                            //Append firebase attributes within JSON response
                             responseJson[ele].priority = snapshot.val().priority;
                             responseJson[ele].esclevel = snapshot.val().esclevel;
                             myTickets.push(responseJson[ele]);
@@ -47,6 +49,7 @@ class Tech extends Component {
                 this.setState({
                     tickets: tickets
                 });
+                //Update the selected ticket to the updated values
                 if(this.state.selectedTicket !== null)  {
                     this.updateSelectedTicket();
                 }
@@ -55,6 +58,7 @@ class Tech extends Component {
 
     }
 
+    //Update selected ticket to current values
     updateSelectedTicket()  {
         for(const ele in this.state.tickets)    {
             if(this.state.tickets[ele].id === this.state.selectedTicket.id )   {
@@ -66,6 +70,7 @@ class Tech extends Component {
         }
     }
 
+    //Select ticket from array and set as selected
     ticketDetailsClick = (ticket) => {     
         const { selectedTicket } = this.state;
         this.setState({
@@ -74,12 +79,14 @@ class Tech extends Component {
         return;
     }
 
+    //Return state to unselected state
     resetSelection()   {
         this.setState({
             selectedTicket: null
         })
     }
 
+    //Decides whether to open summary or comments modal
     editComments(bool)  {
         this.setState({editComments: bool});
     }

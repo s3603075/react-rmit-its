@@ -5,6 +5,12 @@ import { EditorState, convertToRaw} from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import '../../react-draft-wysiwyg.css'
 
+/***********************
+ * Title: react-draft-wysiwyg
+ * Author: https://github.com/jpuri
+ * Date: 10/10/17
+ * Availability: https://github.com/jpuri/react-draft-wysiwyg
+ ***********************/
 
 class Comments extends Component {
     constructor(props){

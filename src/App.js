@@ -11,6 +11,12 @@ import Dashboard from './components/Dashboard';
  * Date: 10/10/17
  * Availability: https://rmit.edu.au
  ***********************/
+/***********************
+ * Title: Bootswatch Theme
+ * Author: Bootswatch
+ * Date: 10/10/17
+ * Availability: https://bootswatch.com/
+ ***********************/
 
 class App extends Component {
     state = {

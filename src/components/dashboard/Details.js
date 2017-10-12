@@ -85,6 +85,10 @@ class Details extends Component {
                             <Modal.Title>Ticket #{this.props.ticket.id}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
+                            <h4>Name</h4>
+                                <div>
+                                    {this.props.ticket.firstname} {this.props.ticket.lastname}
+                                </div>
                             <h4>Issue</h4>
                                 <div>
                                     {this.props.ticket.issue}

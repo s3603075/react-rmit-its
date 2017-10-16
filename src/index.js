@@ -7,12 +7,12 @@ import firebase from 'firebase';
 import {BrowserRouter} from "react-router-dom";
 
 const config = {
-    apiKey: "AIzaSyDaT-A208XALPjEegzPB7WoZl5NPR5dPiE",
-    authDomain: "rmit-its.firebaseapp.com",
-    databaseURL: "https://rmit-its.firebaseio.com",
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
     projectId: "rmit-its",
-    storageBucket: "rmit-its.appspot.com",
-    messagingSenderId: "883266328240"
+    storageBucket: "",
+    messagingSenderId: ""
 };
 firebase.initializeApp(config);
 
